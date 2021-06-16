@@ -6,7 +6,7 @@
 #include <list>
 #include <algorithm>
 #include <time.h>
-#include "include/pugixml.hpp"
+#include "pugixml.hpp"
 #include "SVGObject.hpp"
 #include <sys/types.h>
 #include <sys/stat.h>
