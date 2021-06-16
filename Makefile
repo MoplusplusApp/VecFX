@@ -1,24 +1,34 @@
 BUILDDIR = ./build/
-OBJS = SVGObject.o
-SOURCE = SVGObject.cpp
+OBJS = build/SVGObject.o build/main.o
+SOURCE = src/SVGObject.cpp src/main.cpp
+HEADER	= src/SVGObject.hpp
 LDLIBS += -lpugixml
+FLAGS = -c -Wall -static
+# -g option enables debugging mode 
+# -c flag generates object code for separate files
+# -Wall adds more warnings for debugging
 OUT = VecFX
 CC = g++
-INC= -I\include
+INCLUDE = -I./include/
 RM = /usr/bin/rm -rf
 MKDIR = /usr/bin/mkdir -p
 
 build: $(OBJS)
-	$(CC) -static $(BUILDDIR)$(OBJS) $(LDLIBS) -o $(BUILDDIR)$(OUT)
+	$(CC) -static -g $(OBJS) $(LDLIBS) -o $(BUILDDIR)$(OUT)
 	$(RM) $(BUILDDIR)*.o
 	chmod +x $(BUILDDIR)$(OUT)
 	@echo Build completed successfully!
 	@echo Executable located at $(BUILDDIR)$(OUT)
 
-SVGObject.o: $(SOURCE)
+build/SVGObject.o: src/SVGObject.cpp
+	@$(MKDIR) $(BUILDDIR)
+	@echo Build dir located at $(BUILDDIR)
+	$(CC) $(FLAGS) $(INC) src/SVGObject.cpp -o build/SVGObject.o
+
+build/main.o: src/main.cpp
 	@$(MKDIR) $(BUILDDIR)
 	@echo Build dir created at $(BUILDDIR)
-	$(CC) -c -Wall -static $(SOURCE) $(INC) -o $(BUILDDIR)$(OBJS)
+	$(CC) $(FLAGS) $(INC) src/main.cpp -o build/main.o
 
 clean:
 	$(RM) $(BUILDDIR)*.o
