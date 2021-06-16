@@ -15,16 +15,24 @@
 #include <stdlib.h>
 
 
-
     int randomNumInRange(int rangeStart, int rangeEnd);
     std::string addZeroes(int number, int maxNumber);
-    std::map<std::string, int> interpolationMethod;
     float linearInterpolate(float start, float end, int startFrame, int endFrame, int currentFrame);
+    struct renderPair
+        {
+            std::string objectId, propertyName;
+            int propertyType, startKeyframe, endKeyframe;
+            std::string startValue, endValue;
+        };
     class NatronSVGObject
     {
     public:
-        struct renderPair;
+        
+        pugi::xml_document *doc;
+        std::list<std::list<std::string>> propertyMap;
+        std::list<int> keyframes;
         pugi::xpath_node_set GetObjectsList();
+        
         void SetObjectAttributeAtKeyframe(std::string objectId, std::string attributeName, std::string value, unsigned int keyframeNum, std::string elementType = "*");
         void writeKeyframeData(std::string filename);
         void calcKeyframePoints();
@@ -36,6 +44,9 @@
         void setPseudoGroupAtKeyframe(std::string groupName, std::string attributeName, std::string value, unsigned int keyframeNum, int randRangeStart = 0, int randRangeEnd = 0);
         void render();
     private:
+        std::map<std::string, std::list<std::string>> pseudoGroups;
+        pugi::xml_document keyframeData;
+        std::list<renderPair> renderingData;
         void batchRender(std::string folderName);
         void writeSvg(std::string dir, std::string svgFilename, std::string outputFilename);
         int hex2int(char ch);
@@ -47,6 +58,7 @@
         std::string colorInterpolate(renderPair rp, int currentFrame);
         void removeRedundantSpaces(std::string *str);
         float linearInterpolate(renderPair rp, int currentFrame);
+        float linearInterpolate(float startValue, float endValue, int startKeyframe, int endKeyframe, int currentFrame);
         void displayRenderPair(renderPair p);
         std::map<std::string, std::list<float>> createMap(std::string value);
         void displayRenderingData();
