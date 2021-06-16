@@ -58,18 +58,15 @@ int mainprocess(void) {
 	pugi::xml_document doc;
 	cout << "Enter filename:\n";
 	cin >> fname;
-	pugi::xml_parse_result result = doc.load_file(fname.c_str());
+	// pugi::xml_parse_result result = doc.load_file(fname.c_str());
 	/*cout << "Load result: " << result.description() << endl;*/
 	NatronSVGObject svg1;
 	svg1.doc = &doc;
 	cout << svg1.doc->first_child().name() << endl;
 	/*svg1.SetObjectAttributeAtKeyframe("circleObj", "fill","rgb(0,0,0)", 0, "path");
 	svg1.SetObjectAttributeAtKeyframe("circleObj", "fill","rgb(255,255,255)", 5, "path");*/
-	int taskMode = 0, keyframe = 0, readFromFile = 0;
-	cout << "Should I read data from file? 1 for Y and 0 for N" << endl;
-	cin >> readFromFile;
-	if (readFromFile)
-	{
+	int taskMode;
+	if (question_yes_no("Should I read data from file?") == true) {
 	    cout << "Enter keyframe data filename:\n";
 	    cin >> fname;
 	    svg1.readKeyframesFromFile(fname.c_str());
@@ -77,6 +74,7 @@ int mainprocess(void) {
 	scanf("%d", &taskMode);
 	while (taskMode != -1)
 	{
+		int keyframe;
 	    cout  << "Up here";
 
 	    if (taskMode == 1)
@@ -109,7 +107,7 @@ int mainprocess(void) {
 	    {
 	        string groupName, propertyName, value;
 	        list<string> objects;
-	        int objectIdCount = 0, keyframe;
+	        int objectIdCount = 0;
 	        cout << "Enter group name" << endl;
 	        cin >> groupName;
 	        while (1)
@@ -174,7 +172,7 @@ int mainprocess(void) {
 	svg1.writeKeyframeData("kfData.xml");
 	svg1.render();
 	doc.save_file("written.svg");
-	pugi::xpath_node_set tools = svg1.GetObjectsList();
+	// pugi::xpath_node_set tools = svg1.GetObjectsList();
 	return 0;
 }
 
@@ -215,14 +213,30 @@ int main(int argc, char **argv)
 		}
 	}
 	else if (argc > 2) {
-		cout << "Sorry, you can only use one argument at the moment\n";
+		cout << "Sorry, using more than one argument is not currently supported\n";
 		// Intelligently guess the correct argument
 		int lastnum = argc - 1;
 		string last_argument = string(argv[lastnum]);
-		string question =
-			string("Did you mean to use the ")
-			+ last_argument
-			+ string(" argument?");
+		string question;
+		if (last_argument == "-r" || last_argument == "-t") {
+			question =
+				string("Did you mean to use the ")
+				+ last_argument
+				+ string(" argument?");
+		} else {
+			question = string("Did you mean to use the -t argument?");
+			if (question_yes_no(question) == true) {
+				tutorial();
+			} else {
+				question = string("Did you mean to use the -r argument?");
+				if (question_yes_no(question) == true) {
+					mainprocess();
+				} else {
+					cout << "Exiting...\n";
+					exit(0);
+				}
+			}
+		}
 		if (question_yes_no(question) == true) {
 			// Ask user what to do
 			if (last_argument == "-r") {
