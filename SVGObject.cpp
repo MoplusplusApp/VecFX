@@ -130,7 +130,6 @@ using namespace std;
                     objectNode.attribute(attributeName.c_str()) = value.c_str();
                 }
             }
-            std::cout << "Added attribute at keyframe:" << keyframeNum;
         };
         void NatronSVGObject::writeKeyframeData(std::string filename)
         {

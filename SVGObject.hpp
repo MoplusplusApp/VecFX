@@ -26,6 +26,7 @@
             int propertyType, startKeyframe, endKeyframe;
             std::string startValue, endValue;
         };
+    const std::list<std::string> possibleAtributes={"stroke-width","stroke-dashoffset", "opacity", "rx", "ry", "cx", "cy", "pathLength", "width", "height", "x", "y",};
     class NatronSVGObject
     {
     public:

@@ -9,8 +9,7 @@
 
 #include "SVGObject.hpp"
 
-
-
+#include<QInputDialog>
 #include<QFileDialog>
 #include<QMessageBox>
 #include<QStringListModel>
@@ -86,6 +85,7 @@ void MainWindow::on_actionOpen_SVG_triggered()
         }
         model->setStringList(list);
         ui->listView->setModel(model);
+        mainSVGObject->keyframeData=new pugi::xml_document();
     }
     else{
         QMessageBox msgBox;
@@ -141,7 +141,6 @@ void MainWindow::on_actionOpen_Keyframe_File_triggered()
 
 
 void MainWindow::cellChangedTable(int i, int j){
-    //if()
     qInfo() << "Reached here";
     ui->tableWidget->blockSignals(true);
     mainSVGObject->keyframeData=new pugi::xml_document();
@@ -162,6 +161,59 @@ void MainWindow::cellChangedTable(int i, int j){
     qInfo() << "Document:\n";
     mainSVGObject->keyframeData->save_file("test.xml");
     ui->tableWidget->blockSignals(false);
+}
+
+void MainWindow::rowAdded(){
+    if(svgOpened){
+        bool ok;
+        int kfNum = QInputDialog::getInt(this, tr("Added row: Keyframe"),tr("Keyframe number:"), QLineEdit::Normal,0, 3200, 1, &ok);
+        if(ok){
+            QStringList possibleObjectIds;
+            pugi::xpath_node_set tempNodeSet=mainSVGObject->GetObjectsList();
+            for(auto it=tempNodeSet.begin();it!=tempNodeSet.end();++it){
+                possibleObjectIds << it->node().attribute("id").value();
+            }
+            qInfo() << "Reached here";
+            QString objectId = QInputDialog::getItem(this, tr("Added row: Object ID"),
+                                                                   tr("Object Id:"), possibleObjectIds, 0, false, &ok);;
+            if(ok && !objectId.isEmpty()){
+                QStringList possibleAttributesList;
+                for(auto it=possibleAtributes.begin();it!=possibleAtributes.end();++it){
+                    possibleAttributesList << it->c_str();
+                }
+                QString attribute = QInputDialog::getItem(this, tr("Added row: Property Name"),
+                                                                       tr("Attribute:"), possibleAttributesList, 0, false, &ok);
+                if(ok){
+                    /*TODO: Depending on property, different input dialog, using a switch.*/
+                    double value = QInputDialog::getDouble(this, tr("Added row: Value"),tr("Value:"), QLineEdit::Normal,0, 3200, 1, &ok);
+                    qInfo() << "Hello";
+                    mainSVGObject->SetObjectAttributeAtKeyframe(objectId.toLocal8Bit().constData(), attribute.toLocal8Bit().constData(), std::to_string(value), kfNum);
+                    qInfo() << "123";
+                    ui->tableWidget->blockSignals(true);
+                    auto rowPos=ui->tableWidget->rowCount();
+                    ui->tableWidget->insertRow(rowPos);
+                    auto itemKfNum=new QTableWidgetItem();
+                    itemKfNum->setText(QString::number(kfNum));
+                    auto itemObjectId=new QTableWidgetItem();
+                    itemObjectId->setText(objectId);
+                    auto itemPropertyName=new QTableWidgetItem();
+                    itemPropertyName->setText(attribute);
+                    auto itemValue=new QTableWidgetItem();
+                    itemValue->setText(QString::number(value));
+                    ui->tableWidget->setItem(rowPos,0,itemKfNum);
+                    ui->tableWidget->setItem(rowPos,1,itemObjectId);
+                    ui->tableWidget->setItem(rowPos,2,itemPropertyName);
+                    ui->tableWidget->setItem(rowPos,3,itemValue);
+                    ui->tableWidget->blockSignals(false);
+                }
+            }
+        }
+    }
+    else{
+        QMessageBox::warning(this, tr("VecFX"),
+                                       tr("You haven't opened an SVG. Open one first"),
+                                       QMessageBox::Ok);
+    }
 }
 
 void MainWindow::render(){

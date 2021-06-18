@@ -13,6 +13,11 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #222222;
+color: #DDDDDD;
+</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
@@ -29,6 +34,10 @@
      </property>
      <item>
       <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">color: #DDDDDD;
+</string>
+       </property>
        <property name="text">
         <string>Keyframe Data</string>
        </property>
@@ -38,19 +47,49 @@
       </widget>
      </item>
      <item>
-      <widget class="QTableWidget" name="tableWidget"/>
+      <widget class="QTableWidget" name="tableWidget">
+       <property name="styleSheet">
+        <string notr="true">QTableWidget{
+	show-decoration-selected: 1;
+	selection-color: cyan;
+	color: #DDDDDD;
+}
+
+QTableWidget::item:selected:active:hover{
+    background-color:#42f5ce;
+	 color: #111111;
+}
+QTableWidget::item:selected:active:!hover{
+    background-color: #8000f7; color: #4a2548;
+}
+QTableWidget::item:selected:!active{
+    background-color:yellow; color: #1e5054;
+}
+QTableWidget::item:!selected:hover{
+    background-color:#915d96; color: #111111;
+}</string>
+       </property>
+      </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="addRowButton">
+         <property name="styleSheet">
+          <string notr="true">background-color: #111111;
+color: #DDDDDD;</string>
+         </property>
          <property name="text">
           <string>Add Row</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="removeRowButton">
+         <property name="styleSheet">
+          <string notr="true">background-color: #111111;
+color: #DDDDDD;</string>
+         </property>
          <property name="text">
           <string>Remove Row</string>
          </property>
@@ -58,6 +97,13 @@
        </item>
        <item>
         <widget class="QPushButton" name="renderButton">
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #111111;
+color: #DDDDDD;</string>
+         </property>
          <property name="text">
           <string>Render</string>
          </property>
@@ -82,6 +128,10 @@
      </property>
      <item>
       <widget class="QLabel" name="label_2">
+       <property name="styleSheet">
+        <string notr="true">color: #DDDDDD;
+</string>
+       </property>
        <property name="text">
         <string>SVG Hiraerchy Viewer</string>
        </property>
@@ -91,7 +141,29 @@
       </widget>
      </item>
      <item>
-      <widget class="QListView" name="listView"/>
+      <widget class="QListView" name="listView">
+       <property name="styleSheet">
+        <string notr="true">QListView{
+	show-decoration-selected: 1;
+	selection-color: cyan;
+	color: #DDDDDD;
+}
+
+QListView::item:selected:active:hover{
+    background-color:#42f5ce;
+	 color: #111111;
+}
+QListView::item:selected:active:!hover{
+    background-color: #8000f7; color: #4a2548;
+}
+QListView::item:selected:!active{
+    background-color:yellow; color: #1e5054;
+}
+QListView::item:!selected:hover{
+    background-color:#915d96; color: #111111;
+}</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -161,9 +233,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>addRowButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>rowAdded()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>566</x>
+     <y>594</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1072</x>
+     <y>506</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>cellChangedTable(int,int)</slot>
   <slot>render()</slot>
+  <slot>rowAdded()</slot>
  </slots>
 </ui>

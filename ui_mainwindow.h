@@ -38,8 +38,8 @@ public:
     QLabel *label;
     QTableWidget *tableWidget;
     QHBoxLayout *horizontalLayout;
-    QPushButton *pushButton;
-    QPushButton *pushButton_2;
+    QPushButton *addRowButton;
+    QPushButton *removeRowButton;
     QPushButton *renderButton;
     QWidget *verticalLayoutWidget_2;
     QVBoxLayout *keyframeDataLayout_2;
@@ -54,6 +54,9 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(1107, 785);
+        MainWindow->setStyleSheet(QString::fromUtf8("background-color: #222222;\n"
+"color: #DDDDDD;\n"
+""));
         actionOpen_SVG = new QAction(MainWindow);
         actionOpen_SVG->setObjectName(QString::fromUtf8("actionOpen_SVG"));
         actionOpen_Keyframe_File = new QAction(MainWindow);
@@ -69,29 +72,57 @@ public:
         keyframeDataLayout->setContentsMargins(0, 0, 0, 0);
         label = new QLabel(verticalLayoutWidget);
         label->setObjectName(QString::fromUtf8("label"));
+        label->setStyleSheet(QString::fromUtf8("color: #DDDDDD;\n"
+""));
         label->setAlignment(Qt::AlignCenter);
 
         keyframeDataLayout->addWidget(label);
 
         tableWidget = new QTableWidget(verticalLayoutWidget);
         tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
+        tableWidget->setStyleSheet(QString::fromUtf8("QTableWidget{\n"
+"	show-decoration-selected: 1;\n"
+"	selection-color: cyan;\n"
+"	color: #DDDDDD;\n"
+"}\n"
+"\n"
+"QTableWidget::item:selected:active:hover{\n"
+"    background-color:#42f5ce;\n"
+"	 color: #111111;\n"
+"}\n"
+"QTableWidget::item:selected:active:!hover{\n"
+"    background-color: #8000f7; color: #4a2548;\n"
+"}\n"
+"QTableWidget::item:selected:!active{\n"
+"    background-color:yellow; color: #1e5054;\n"
+"}\n"
+"QTableWidget::item:!selected:hover{\n"
+"    background-color:#915d96; color: #111111;\n"
+"}"));
 
         keyframeDataLayout->addWidget(tableWidget);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        pushButton = new QPushButton(verticalLayoutWidget);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+        addRowButton = new QPushButton(verticalLayoutWidget);
+        addRowButton->setObjectName(QString::fromUtf8("addRowButton"));
+        addRowButton->setStyleSheet(QString::fromUtf8("background-color: #111111;\n"
+"color: #DDDDDD;"));
 
-        horizontalLayout->addWidget(pushButton);
+        horizontalLayout->addWidget(addRowButton);
 
-        pushButton_2 = new QPushButton(verticalLayoutWidget);
-        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
+        removeRowButton = new QPushButton(verticalLayoutWidget);
+        removeRowButton->setObjectName(QString::fromUtf8("removeRowButton"));
+        removeRowButton->setStyleSheet(QString::fromUtf8("background-color: #111111;\n"
+"color: #DDDDDD;"));
 
-        horizontalLayout->addWidget(pushButton_2);
+        horizontalLayout->addWidget(removeRowButton);
 
         renderButton = new QPushButton(verticalLayoutWidget);
         renderButton->setObjectName(QString::fromUtf8("renderButton"));
+        renderButton->setAutoFillBackground(false);
+        renderButton->setStyleSheet(QString::fromUtf8("background-color: #111111;\n"
+"color: #DDDDDD;"));
 
         horizontalLayout->addWidget(renderButton);
 
@@ -107,12 +138,33 @@ public:
         keyframeDataLayout_2->setContentsMargins(0, 0, 0, 0);
         label_2 = new QLabel(verticalLayoutWidget_2);
         label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setStyleSheet(QString::fromUtf8("color: #DDDDDD;\n"
+""));
         label_2->setAlignment(Qt::AlignCenter);
 
         keyframeDataLayout_2->addWidget(label_2);
 
         listView = new QListView(verticalLayoutWidget_2);
         listView->setObjectName(QString::fromUtf8("listView"));
+        listView->setStyleSheet(QString::fromUtf8("QListView{\n"
+"	show-decoration-selected: 1;\n"
+"	selection-color: cyan;\n"
+"	color: #DDDDDD;\n"
+"}\n"
+"\n"
+"QListView::item:selected:active:hover{\n"
+"    background-color:#42f5ce;\n"
+"	 color: #111111;\n"
+"}\n"
+"QListView::item:selected:active:!hover{\n"
+"    background-color: #8000f7; color: #4a2548;\n"
+"}\n"
+"QListView::item:selected:!active{\n"
+"    background-color:yellow; color: #1e5054;\n"
+"}\n"
+"QListView::item:!selected:hover{\n"
+"    background-color:#915d96; color: #111111;\n"
+"}"));
 
         keyframeDataLayout_2->addWidget(listView);
 
@@ -135,6 +187,7 @@ public:
         retranslateUi(MainWindow);
         QObject::connect(renderButton, SIGNAL(clicked()), MainWindow, SLOT(render()));
         QObject::connect(tableWidget, SIGNAL(cellChanged(int,int)), MainWindow, SLOT(cellChangedTable(int,int)));
+        QObject::connect(addRowButton, SIGNAL(clicked()), MainWindow, SLOT(rowAdded()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -145,8 +198,8 @@ public:
         actionOpen_SVG->setText(QCoreApplication::translate("MainWindow", "Open SVG", nullptr));
         actionOpen_Keyframe_File->setText(QCoreApplication::translate("MainWindow", "Open Keyframe File", nullptr));
         label->setText(QCoreApplication::translate("MainWindow", "Keyframe Data", nullptr));
-        pushButton->setText(QCoreApplication::translate("MainWindow", "Add Row", nullptr));
-        pushButton_2->setText(QCoreApplication::translate("MainWindow", "Remove Row", nullptr));
+        addRowButton->setText(QCoreApplication::translate("MainWindow", "Add Row", nullptr));
+        removeRowButton->setText(QCoreApplication::translate("MainWindow", "Remove Row", nullptr));
         renderButton->setText(QCoreApplication::translate("MainWindow", "Render", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "SVG Hiraerchy Viewer", nullptr));
         menuFile->setTitle(QCoreApplication::translate("MainWindow", "File", nullptr));

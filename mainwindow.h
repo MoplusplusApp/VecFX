@@ -24,6 +24,7 @@ private slots:
     void cellChangedTable(int i, int j);
     void render();
     void on_actionOpen_Keyframe_File_triggered();
+    void rowAdded();
 
 private:
     Ui::MainWindow *ui;
