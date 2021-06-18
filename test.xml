@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<k0>
+	<circleOuter stroke-dashoffset="100" />
+	<circleInner stroke-dashoffset="100" />
+</k0>
+<k99>
+	<circleOuter stroke-dashoffset="100" />
+	<circleInner stroke-dashoffset="0" />
+	<textUpper stroke-dashoffset="100" />
+	<textLower2 stroke-dashoffset="100" />
+</k99>
+<k129>
+	<textUpper stroke-dashoffset="75" />
+	<textLower2 stroke-dashoffset="75" />
+	<textUpper2 opacity="0" />
+	<textLower opacity="0" />
+</k129>
+<k189>
+	<textLower opacity="1" />
+	<textUpper2 opacity="1" />
+</k189>

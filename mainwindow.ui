@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1107</width>
+    <height>785</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #222222;
+color: #DDDDDD;
+</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>20</y>
+      <width>611</width>
+      <height>561</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="keyframeDataLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinAndMaxSize</enum>
+     </property>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">color: #DDDDDD;
+</string>
+       </property>
+       <property name="text">
+        <string>Keyframe Data</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTableWidget" name="tableWidget">
+       <property name="styleSheet">
+        <string notr="true">QTableWidget{
+	show-decoration-selected: 1;
+	selection-color: cyan;
+	color: #DDDDDD;
+}
+
+QTableWidget::item:selected:active:hover{
+    background-color:#42f5ce;
+	 color: #111111;
+}
+QTableWidget::item:selected:active:!hover{
+    background-color: #8000f7; color: #4a2548;
+}
+QTableWidget::item:selected:!active{
+    background-color:yellow; color: #1e5054;
+}
+QTableWidget::item:!selected:hover{
+    background-color:#915d96; color: #111111;
+}</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="addRowButton">
+         <property name="styleSheet">
+          <string notr="true">background-color: #111111;
+color: #DDDDDD;</string>
+         </property>
+         <property name="text">
+          <string>Add Row</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="removeRowButton">
+         <property name="styleSheet">
+          <string notr="true">background-color: #111111;
+color: #DDDDDD;</string>
+         </property>
+         <property name="text">
+          <string>Remove Row</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="renderButton">
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #111111;
+color: #DDDDDD;</string>
+         </property>
+         <property name="text">
+          <string>Render</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>351</width>
+      <height>561</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="keyframeDataLayout_2">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinAndMaxSize</enum>
+     </property>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="styleSheet">
+        <string notr="true">color: #DDDDDD;
+</string>
+       </property>
+       <property name="text">
+        <string>SVG Hiraerchy Viewer</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListView" name="listView">
+       <property name="styleSheet">
+        <string notr="true">QListView{
+	show-decoration-selected: 1;
+	selection-color: cyan;
+	color: #DDDDDD;
+}
+
+QListView::item:selected:active:hover{
+    background-color:#42f5ce;
+	 color: #111111;
+}
+QListView::item:selected:active:!hover{
+    background-color: #8000f7; color: #4a2548;
+}
+QListView::item:selected:!active{
+    background-color:yellow; color: #1e5054;
+}
+QListView::item:!selected:hover{
+    background-color:#915d96; color: #111111;
+}</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1107</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionOpen_SVG"/>
+    <addaction name="actionOpen_Keyframe_File"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen_SVG">
+   <property name="text">
+    <string>Open SVG</string>
+   </property>
+  </action>
+  <action name="actionOpen_Keyframe_File">
+   <property name="text">
+    <string>Open Keyframe File</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>renderButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>render()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>942</x>
+     <y>596</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1074</x>
+     <y>407</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tableWidget</sender>
+   <signal>cellChanged(int,int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>cellChangedTable(int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>955</x>
+     <y>294</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1062</x>
+     <y>298</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addRowButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>rowAdded()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>566</x>
+     <y>594</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1072</x>
+     <y>506</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>cellChangedTable(int,int)</slot>
+  <slot>render()</slot>
+  <slot>rowAdded()</slot>
+ </slots>
+</ui>
