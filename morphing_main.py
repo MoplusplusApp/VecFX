@@ -40,14 +40,14 @@ class Path:
     def printPath(self):
         print(self.pathData)
 
-x=Path("M 10 80 Q 95 10 180 80")
-print(x.printPath())
+
+#print(x.printPath())
             
             
 
 def QtoC(startingPoint, qData):
-    
-    pass
+    print(startingPoint, qData)
+    return [startingPoint[0]+(2*(qData[0]-startingPoint[0])/3),startingPoint[1]+(2*(qData[1]-startingPoint[1])/3),qData[2]+(2*(qData[0]-qData[2])/3),qData[3]+(2*(qData[1]-qData[3])/3), qData[2], qData[3]]
 
 
 
@@ -58,8 +58,14 @@ def morphEquivalentLength(path1, path2, fac):
     i=1
     while(i!=len(path1)):
         if(path1[i]=="Q" and path2[i]=="C"):
-            path1[i]=QtoC(path1[i-1][1][-9:], )
-            pass
+            path1[i][0]="C"
+            path1[i][1]=QtoC(path1[i-1][1][-2:], path1[i][1])
+        elif(path1[i]=="C" and path2[i]=="Q"):
+            path2[i][0]="Q"
+            path2[i][1]=QtoC(path2[i-1][1][-2:], path2[i][1])
+        
         i+=1
 
+x=Path("M 10 80 Q 95 10 180 80")
+x.printPath()
 
