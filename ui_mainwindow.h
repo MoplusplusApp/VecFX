@@ -172,6 +172,14 @@ public:
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 1107, 22));
+        menubar->setStyleSheet(QString::fromUtf8("QMenuBar#QMenu{\n"
+"	background-color: rgb(193, 125, 17);\n"
+"	color: #000000;\n"
+"}\n"
+"QMenuBar#QMenu:hover{\n"
+"	background-color:#000000;\n"
+"	color:  rgb(193, 125, 17);\n"
+"}"));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         MainWindow->setMenuBar(menubar);

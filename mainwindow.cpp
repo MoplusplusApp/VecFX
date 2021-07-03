@@ -4,7 +4,7 @@
 
 
 #include "pugixml.hpp"
-
+#include "cairo.h"
 
 
 #include "SVGObject.hpp"
@@ -107,6 +107,7 @@ void MainWindow::on_actionOpen_Keyframe_File_triggered()
     }
     else{
         qInfo() << "Kf file opened";
+
         mainSVGObject->keyframeData=new pugi::xml_document();
         mainSVGObject->keyframeData->load_file(QFileDialog::getOpenFileName(this,tr("Open XML File 1"), "/home", tr("XML Files (*.xml)")).toLocal8Bit());
         ui->tableWidget->blockSignals(true);

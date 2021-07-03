@@ -7,12 +7,16 @@
 #include <algorithm>
 #include <time.h>
 #include "pugixml.hpp"
+#include "resvg.h"
+#include "ResvgQt.h"
 #include "SVGObject.hpp"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+
 
 #define CLASS true
 #ifdef CLASS
@@ -286,6 +290,10 @@ using namespace std;
             calcKeyframePoints();
             lastKeyframe = *--(keyframes.end());
             counter = 0; //keyframes.size();
+            resvg_init_log();
+            resvg_options *opt = resvg_options_create();
+            resvg_options_load_system_fonts(opt);
+
             for (int currentKeyframe = 0; currentKeyframe != lastKeyframe + 1; currentKeyframe++)
             {
                 /*Check if the next major keyframe matches the current keyframe*/
@@ -336,7 +344,7 @@ using namespace std;
         };
 
         void NatronSVGObject::batchRender(string folderName){
-            //system(("cd "+ folderName+" && ffmpeg -framerate 60 -i \"%03d.png\" output.mp4 " + std::to_string(lastKeyframe)).c_str());
+
         }
         void NatronSVGObject::writeSvg(std::string dir, std::string svgFilename, std::string outputFilename)
         {

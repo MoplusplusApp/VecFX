@@ -3,8 +3,15 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
-
+CONFIG += link_pkgconfig
+PKGCONFIG += cairo
 LIBS+=-lpugixml
+
+
+*-g++* {
+    QMAKE_CXXFLAGS += cairo
+}
+
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -17,9 +24,11 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    ResvgQt.h \
     SVGObject.hpp \
     kfTableModel.h \
-    mainwindow.h
+    mainwindow.h \
+    resvg.h
 
 FORMS += \
     mainwindow.ui
