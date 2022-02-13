@@ -98,7 +98,9 @@ void MainWindow::on_actionOpen_SVG_triggered()
 
 }
 
+/*void MainWindow::on_actionSave_Keyframe_File_triggered(){
 
+}*/
 void MainWindow::on_actionOpen_Keyframe_File_triggered()
 {
     if(!svgOpened){
@@ -187,7 +189,7 @@ void MainWindow::rowAdded(){
                                                                        tr("Attribute:"), possibleAttributesList, 0, false, &ok);
                 if(ok){
                     int valueType;
-                    /*TODO: Depending on property, different input dialog, using a switch.*/
+
                     for(auto it=possibleAttributes.begin();it!=possibleAttributes.end();++it){
                         if(attribute==it->first.c_str()){
                             valueType=it->second;

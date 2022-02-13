@@ -319,23 +319,63 @@ using namespace std;
                                 << "Writing keyframe:" << currentKeyframe;
                         if (objectNode.attribute(updateSVGIter->propertyName.c_str()).value() != "")
                         {
-                            if (updateSVGIter->propertyName.compare("fill") != 0)
+                            int valueType;
+                            for(auto it =possibleAttributes.begin();it!=possibleAttributes.end();++it){
+                                if (updateSVGIter->propertyName.compare(it->first)==0){
+                                    valueType=it->second;
+                                }
+
+
+                            }
+
+                            if(valueType==1){
+                                if (objectNode.attribute(updateSVGIter->propertyName.c_str()) == NULL)
+                                {
+                                    objectNode.append_attribute(updateSVGIter->propertyName.c_str()) = std::to_string(linearInterpolate((*updateSVGIter), currentKeyframe)).c_str();
+                                }
+                                else
+                                {
+                                    objectNode.attribute(updateSVGIter->propertyName.c_str()).set_value(std::to_string(linearInterpolate((*updateSVGIter), currentKeyframe)).c_str());
+                                }
+                            }
+                            else if(valueType==2){
+                                if (objectNode.attribute(updateSVGIter->propertyName.c_str()) == NULL)
+                                {
+                                    objectNode.append_attribute(updateSVGIter->propertyName.c_str()) = ColorToRGBAString(colorInterpolate((*updateSVGIter), currentKeyframe)).c_str();
+                                }
+                                else
+                                {
+                                    objectNode.attribute(updateSVGIter->propertyName.c_str()).set_value(ColorToRGBAString(colorInterpolate((*updateSVGIter), currentKeyframe)).c_str());
+                                }
+                            }
+                            else if(valueType==3){
+
+                            }
+                            /*if (updateSVGIter->propertyName.compare("fill") != 0)
                             {
-                                /*if (updateSVGIter->propertyName.compare("transform") != 0)
+                                if (updateSVGIter->propertyName.compare("transform") != 0)
                                 {
                                     objectNode.attribute(updateSVGIter->propertyName.c_str()).set_value(std::to_string(linearInterpolate((*updateSVGIter), currentKeyframe)).c_str());
                                 }
                                 else
                                 {
                                     objectNode.attribute(updateSVGIter->propertyName.c_str()).set_value(transformInterpolate((*updateSVGIter), currentKeyframe).c_str());
-                                }*/
+                                }
                             }
                             else
                             {
                                 // std::cout << endl << colorInterpolate((*updateSVGIter), currentKeyframe) << " One cycle " << endl;
                                 qInfo() << ColorToRGBAString(colorInterpolate((*updateSVGIter), currentKeyframe)).c_str();
-                                objectNode.attribute(updateSVGIter->propertyName.c_str()).set_value(ColorToRGBAString(colorInterpolate((*updateSVGIter), currentKeyframe)).c_str());
-                            }
+                                if (objectNode.attribute(updateSVGIter->propertyName.c_str()) == NULL)
+                                {
+                                    objectNode.append_attribute(updateSVGIter->propertyName.c_str()) = ColorToRGBAString(colorInterpolate((*updateSVGIter), currentKeyframe)).c_str();
+                                }
+                                else
+                                {
+                                    objectNode.attribute(updateSVGIter->propertyName.c_str()).set_value(ColorToRGBAString(colorInterpolate((*updateSVGIter), currentKeyframe)).c_str());
+                                }
+
+                            }*/
                         }
                     }
                 }
@@ -498,14 +538,15 @@ using namespace std;
 
         std::string NatronSVGObject::ColorToRGBAString(CSSColorParser::Color clr){
             std::string retStr;
+            qInfo() << (int) clr.r << (int) clr.g << (int) clr.b;
             retStr+="rgba( ";
-            retStr+=clr.r;
+            retStr+=std::to_string((int) clr.r);
             retStr+=" ,";
-            retStr+=clr.g;
+            retStr+=std::to_string((int) clr.g);
             retStr+=" ,";
-            retStr+=clr.b;
+            retStr+=std::to_string((int) clr.b);
             retStr+=" ,";
-            retStr+=clr.a;
+            retStr+=std::to_string((float) clr.a);
             retStr+=")";
             return retStr;
         }

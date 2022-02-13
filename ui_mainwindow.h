@@ -32,6 +32,7 @@ class Ui_MainWindow
 public:
     QAction *actionOpen_SVG;
     QAction *actionOpen_Keyframe_File;
+    QAction *actionSave_Keyframe_File;
     QWidget *centralwidget;
     QWidget *verticalLayoutWidget;
     QVBoxLayout *keyframeDataLayout;
@@ -61,6 +62,8 @@ public:
         actionOpen_SVG->setObjectName(QString::fromUtf8("actionOpen_SVG"));
         actionOpen_Keyframe_File = new QAction(MainWindow);
         actionOpen_Keyframe_File->setObjectName(QString::fromUtf8("actionOpen_Keyframe_File"));
+        actionSave_Keyframe_File = new QAction(MainWindow);
+        actionSave_Keyframe_File->setObjectName(QString::fromUtf8("actionSave_Keyframe_File"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayoutWidget = new QWidget(centralwidget);
@@ -191,6 +194,7 @@ public:
         menuFile->addSeparator();
         menuFile->addAction(actionOpen_SVG);
         menuFile->addAction(actionOpen_Keyframe_File);
+        menuFile->addAction(actionSave_Keyframe_File);
 
         retranslateUi(MainWindow);
         QObject::connect(renderButton, SIGNAL(clicked()), MainWindow, SLOT(render()));
@@ -205,6 +209,7 @@ public:
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         actionOpen_SVG->setText(QCoreApplication::translate("MainWindow", "Open SVG", nullptr));
         actionOpen_Keyframe_File->setText(QCoreApplication::translate("MainWindow", "Open Keyframe File", nullptr));
+        actionSave_Keyframe_File->setText(QCoreApplication::translate("MainWindow", "Save Keyframe File", nullptr));
         label->setText(QCoreApplication::translate("MainWindow", "Keyframe Data", nullptr));
         addRowButton->setText(QCoreApplication::translate("MainWindow", "Add Row", nullptr));
         removeRowButton->setText(QCoreApplication::translate("MainWindow", "Remove Row", nullptr));

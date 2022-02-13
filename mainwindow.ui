@@ -194,6 +194,7 @@ QMenuBar#QMenu:hover{
     <addaction name="separator"/>
     <addaction name="actionOpen_SVG"/>
     <addaction name="actionOpen_Keyframe_File"/>
+    <addaction name="actionSave_Keyframe_File"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -206,6 +207,11 @@ QMenuBar#QMenu:hover{
   <action name="actionOpen_Keyframe_File">
    <property name="text">
     <string>Open Keyframe File</string>
+   </property>
+  </action>
+  <action name="actionSave_Keyframe_File">
+   <property name="text">
+    <string>Save Keyframe File</string>
    </property>
   </action>
  </widget>
