@@ -29,7 +29,7 @@
 #include <QString>
 #include <QTransform>
 
-#include <resvg.h>
+#include "resvg.h"
 
 namespace ResvgPrivate {
 

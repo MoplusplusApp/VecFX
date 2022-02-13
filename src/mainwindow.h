@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <SVGObject.hpp>
+#include "SVGObject.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
