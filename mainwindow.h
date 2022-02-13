@@ -26,6 +26,8 @@ private slots:
     void on_actionOpen_Keyframe_File_triggered();
     void rowAdded();
 
+    void on_actionSave_Keyframe_File_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

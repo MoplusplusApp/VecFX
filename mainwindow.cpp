@@ -257,3 +257,25 @@ void MainWindow::render(){
     qInfo() << "Folder name:" << writeDirectory ;
     mainSVGObject->render(writeDirectory.toLocal8Bit().constData());
 }
+
+void MainWindow::on_actionSave_Keyframe_File_triggered()
+{
+    if(svgOpened){
+        // QString writeDirectory=QFileDialog::getSaveFileUrl(this, tr("Save file as"),QString("/home/jana/untitled.png"),tr("XML files (*.xml)"));
+        QFileDialog saveFileDialog;
+        saveFileDialog.setDefaultSuffix("xml");
+        QString fileName = saveFileDialog.getSaveFileName(this, tr("Save File as"),
+                                   "/home/",
+                                   tr("XML files (*.xml)"));
+
+        mainSVGObject->writeKeyframeData(fileName.toStdString());
+
+    }
+    else{
+        QMessageBox::warning(this, tr("VecFX"),
+                             tr("You haven't opened an SVG. Open one first"),
+                             QMessageBox::Ok);
+    }
+
+}
+
