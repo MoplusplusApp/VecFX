@@ -4,8 +4,7 @@
 
 
 #include "pugixml.hpp"
-#include "cairo.h"
-
+#include "ResvgQt.h"
 
 #include "SVGObject.hpp"
 
@@ -14,8 +13,10 @@
 #include<QMessageBox>
 #include<QStringListModel>
 #include<QDebug>
-int counter=0;
+#include <QColorDialog>
 
+
+int counter=0;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -30,7 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
     stringListModel->setStringList(stringListSVG);
     ui->listView->setModel(stringListModel);
     ui->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
     /*Setup Keyframe data view UI*/
     ui->tableWidget->setColumnCount(4);
     ui->tableWidget->setHorizontalHeaderLabels(QStringList{"Keyframe Number", "Object ID", "Property Name", "Value"});
@@ -73,9 +73,10 @@ void MainWindow::on_actionOpen_SVG_triggered()
     svgOpened=true;
     mainSVGObject=new NatronSVGObject();
     mainSVGObject->doc=new pugi::xml_document();
-
-    pugi::xml_parse_result res=mainSVGObject->doc->load_file(QFileDialog::getOpenFileName(this,
-                                                               tr("Open SVG file"), "/home", tr("SVG Files (*.svg)")).toLocal8Bit());
+    QString filePath=QFileDialog::getOpenFileName(this,tr("Open SVG file"), "/home", tr("SVG Files (*.svg)"));
+    pugi::xml_parse_result res=mainSVGObject->doc->load_file(filePath.toLocal8Bit());
+    ResvgOptions* opt= new ResvgOptions();
+    ResvgRenderer* x= new ResvgRenderer();
     if(res.status==pugi::xml_parse_status::status_ok){
         pugi::xpath_node_set tempNodeSet=mainSVGObject->GetObjectsList();
         auto model = new QStringListModel(this);
@@ -179,33 +180,61 @@ void MainWindow::rowAdded(){
                                                                    tr("Object Id:"), possibleObjectIds, 0, false, &ok);;
             if(ok && !objectId.isEmpty()){
                 QStringList possibleAttributesList;
-                for(auto it=possibleAtributes.begin();it!=possibleAtributes.end();++it){
-                    possibleAttributesList << it->c_str();
+                for(auto it=possibleAttributes.begin();it!=possibleAttributes.end();++it){
+                    possibleAttributesList << it->first.c_str();
                 }
                 QString attribute = QInputDialog::getItem(this, tr("Added row: Property Name"),
                                                                        tr("Attribute:"), possibleAttributesList, 0, false, &ok);
                 if(ok){
+                    int valueType;
                     /*TODO: Depending on property, different input dialog, using a switch.*/
-                    double value = QInputDialog::getDouble(this, tr("Added row: Value"),tr("Value:"), QLineEdit::Normal,0, 3200, 1, &ok);
-                    qInfo() << "Hello";
-                    mainSVGObject->SetObjectAttributeAtKeyframe(objectId.toLocal8Bit().constData(), attribute.toLocal8Bit().constData(), std::to_string(value), kfNum);
-                    qInfo() << "123";
-                    ui->tableWidget->blockSignals(true);
-                    auto rowPos=ui->tableWidget->rowCount();
-                    ui->tableWidget->insertRow(rowPos);
-                    auto itemKfNum=new QTableWidgetItem();
-                    itemKfNum->setText(QString::number(kfNum));
-                    auto itemObjectId=new QTableWidgetItem();
-                    itemObjectId->setText(objectId);
-                    auto itemPropertyName=new QTableWidgetItem();
-                    itemPropertyName->setText(attribute);
-                    auto itemValue=new QTableWidgetItem();
-                    itemValue->setText(QString::number(value));
-                    ui->tableWidget->setItem(rowPos,0,itemKfNum);
-                    ui->tableWidget->setItem(rowPos,1,itemObjectId);
-                    ui->tableWidget->setItem(rowPos,2,itemPropertyName);
-                    ui->tableWidget->setItem(rowPos,3,itemValue);
-                    ui->tableWidget->blockSignals(false);
+                    for(auto it=possibleAttributes.begin();it!=possibleAttributes.end();++it){
+                        if(attribute==it->first.c_str()){
+                            valueType=it->second;
+                        }
+                    }
+                    if(valueType==1){
+                        double value = QInputDialog::getDouble(this, tr("Added row: Value"),tr("Value:"), QLineEdit::Normal,0, 3200, 1, &ok);
+                        mainSVGObject->SetObjectAttributeAtKeyframe(objectId.toLocal8Bit().constData(), attribute.toLocal8Bit().constData(), std::to_string(value), kfNum);
+                        ui->tableWidget->blockSignals(true);
+                        /*TODO -> Explain Block signals*/
+                        auto rowPos=ui->tableWidget->rowCount();
+                        ui->tableWidget->insertRow(rowPos);
+                        auto itemKfNum=new QTableWidgetItem();
+                        itemKfNum->setText(QString::number(kfNum));
+                        auto itemObjectId=new QTableWidgetItem();
+                        itemObjectId->setText(objectId);
+                        auto itemPropertyName=new QTableWidgetItem();
+                        itemPropertyName->setText(attribute);
+                        auto itemValue=new QTableWidgetItem();
+                        itemValue->setText(QString::number(value));
+                        ui->tableWidget->setItem(rowPos,0,itemKfNum);
+                        ui->tableWidget->setItem(rowPos,1,itemObjectId);
+                        ui->tableWidget->setItem(rowPos,2,itemPropertyName);
+                        ui->tableWidget->setItem(rowPos,3,itemValue);
+                        ui->tableWidget->blockSignals(false);
+                    }
+                    else if(valueType==2){
+                        auto value=QColorDialog::getColor().name();
+                        mainSVGObject->SetObjectAttributeAtKeyframe(objectId.toLocal8Bit().constData(), attribute.toLocal8Bit().constData(), value.toStdString(), kfNum);
+                        ui->tableWidget->blockSignals(true);
+                        auto rowPos=ui->tableWidget->rowCount();
+                        ui->tableWidget->insertRow(rowPos);
+                        auto itemKfNum=new QTableWidgetItem();
+                        itemKfNum->setText(QString::number(kfNum));
+                        auto itemObjectId=new QTableWidgetItem();
+                        itemObjectId->setText(objectId);
+                        auto itemPropertyName=new QTableWidgetItem();
+                        itemPropertyName->setText(attribute);
+                        auto itemValue=new QTableWidgetItem();
+                        itemValue->setText(value);
+                        ui->tableWidget->setItem(rowPos,0,itemKfNum);
+                        ui->tableWidget->setItem(rowPos,1,itemObjectId);
+                        ui->tableWidget->setItem(rowPos,2,itemPropertyName);
+                        ui->tableWidget->setItem(rowPos,3,itemValue);
+                        ui->tableWidget->blockSignals(false);
+
+                    }
                 }
             }
         }
@@ -218,11 +247,11 @@ void MainWindow::rowAdded(){
 }
 
 void MainWindow::render(){
-
-    QString testStr=QFileDialog::getExistingDirectory(this, tr("Open Write Directory"),
+    // Accepts the folder where the files need to be written and writes the SVGs.
+    QString writeDirectory=QFileDialog::getExistingDirectory(this, tr("Open Write Directory"),
                                                       "/home",
                                                       QFileDialog::ShowDirsOnly
                                                       | QFileDialog::DontResolveSymlinks);
-    qInfo() << "Folder name:" << testStr ;
-    mainSVGObject->render(testStr.toLocal8Bit().constData());
+    qInfo() << "Folder name:" << writeDirectory ;
+    mainSVGObject->render(writeDirectory.toLocal8Bit().constData());
 }

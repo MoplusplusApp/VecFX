@@ -7,8 +7,7 @@
 #include <algorithm>
 #include <time.h>
 #include "pugixml.hpp"
-#include "resvg.h"
-#include "ResvgQt.h"
+
 #include "SVGObject.hpp"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -16,8 +15,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "csscolorparser.hpp"
 
-
+#include <QDebug>
 #define CLASS true
 #ifdef CLASS
 
@@ -149,6 +149,7 @@ using namespace std;
                 this->keyframes.push_back(std::stoi(x.substr(1, x.length() - 1)));
             }
         }
+
         renderPair NatronSVGObject::findNextReference(pugi::xml_node_iterator currentKeyframeNodeIterator, std::string objectId, std::string propertyName, std::string prevValue)
         {
             renderPair newRenderPair;
@@ -290,9 +291,9 @@ using namespace std;
             calcKeyframePoints();
             lastKeyframe = *--(keyframes.end());
             counter = 0; //keyframes.size();
-            resvg_init_log();
+            /*resvg_init_log();
             resvg_options *opt = resvg_options_create();
-            resvg_options_load_system_fonts(opt);
+            resvg_options_load_system_fonts(opt);*/
 
             for (int currentKeyframe = 0; currentKeyframe != lastKeyframe + 1; currentKeyframe++)
             {
@@ -320,26 +321,26 @@ using namespace std;
                         {
                             if (updateSVGIter->propertyName.compare("fill") != 0)
                             {
-                                if (updateSVGIter->propertyName.compare("transform") != 0)
+                                /*if (updateSVGIter->propertyName.compare("transform") != 0)
                                 {
                                     objectNode.attribute(updateSVGIter->propertyName.c_str()).set_value(std::to_string(linearInterpolate((*updateSVGIter), currentKeyframe)).c_str());
                                 }
                                 else
                                 {
                                     objectNode.attribute(updateSVGIter->propertyName.c_str()).set_value(transformInterpolate((*updateSVGIter), currentKeyframe).c_str());
-                                }
+                                }*/
                             }
                             else
                             {
-                                std::cout << endl
-                                        << colorInterpolate((*updateSVGIter), currentKeyframe) << " One cycle " << endl;
-                                objectNode.attribute(updateSVGIter->propertyName.c_str()).set_value(colorInterpolate((*updateSVGIter), currentKeyframe).c_str());
+                                // std::cout << endl << colorInterpolate((*updateSVGIter), currentKeyframe) << " One cycle " << endl;
+                                qInfo() << ColorToRGBAString(colorInterpolate((*updateSVGIter), currentKeyframe)).c_str();
+                                objectNode.attribute(updateSVGIter->propertyName.c_str()).set_value(ColorToRGBAString(colorInterpolate((*updateSVGIter), currentKeyframe)).c_str());
                             }
                         }
                     }
                 }
 
-                this->writeSvg(folderName, (std::to_string(currentKeyframe) + ".svg"), addZeroes(currentKeyframe + 1, lastKeyframe + 1) + ".png");
+                this->writeSvg(folderName, (addZeroes(currentKeyframe + 1, lastKeyframe + 1) + ".svg"), addZeroes(currentKeyframe + 1, lastKeyframe + 1) + ".png");
             }
         };
 
@@ -369,7 +370,8 @@ using namespace std;
             b[2] = '\0';
             return b;
         };
-        std::string NatronSVGObject::transformInterpolate(renderPair rp, int currentKeyframe){
+
+        /*std::string NatronSVGObject::transformInterpolate(renderPair rp, int currentKeyframe){
             std::map<std::string, std::list<float>> map1,map2;
             map1=createMap(rp.startValue);
             map2=createMap(rp.endValue);
@@ -425,7 +427,8 @@ using namespace std;
 
             return returnString;
         };
-        std::string NatronSVGObject::hexInterpolate(renderPair rp, int currentFrame)
+        // Older color interpolations
+        /*std::string NatronSVGObject::hexInterpolate(renderPair rp, int currentFrame)
         {
             bool hasA;
             int colorType; //1:HEX(native), 2:RGB
@@ -476,155 +479,37 @@ using namespace std;
             std::cout << endl
                       << ret << endl;
             return ret;
-        };
-        std::string NatronSVGObject::colorInterpolate(renderPair rp, int currentFrame)
+        };*/
+
+        /*All Color Methods*/
+
+        CSSColorParser::Color NatronSVGObject::colorInterpolate(renderPair rp, int currentFrame)
         {
-            /*bool hasA;
-                    int colorType; //1:HEX(native), 2:RGB
-                    unsigned char colorValsStart[4], colorValsEnd[4];
-                    int count=0;
-                    std::string ret="#";*/
-            /*HEX implementation*/
-            removeRedundantSpaces(&rp.startValue);
-            removeRedundantSpaces(&rp.endValue);
-            if (*(rp.startValue.begin()) == '#')
-            {
-            }
-            else if (*(rp.startValue.begin()) == 'r' || *(rp.startValue.begin()) == 'R')
-            {
-                std::string storage, ret = "#";
-                int count = 0;
-                unsigned char countVals[4];
-                bool passedBracket = false;
-                for (auto letterIt = rp.startValue.begin(); letterIt != rp.startValue.end(); ++letterIt)
-                {
-                    if (!passedBracket)
-                    {
-                        if (isdigit(*letterIt))
-                        {
-                            passedBracket = true;
-                        }
-                    }
-                    if (isdigit(*letterIt) && passedBracket)
-                    {
-                        storage += *letterIt;
-                    }
-                    else if (passedBracket && !isdigit(*letterIt))
-                    {
-                        countVals[count] = std::stoi(storage);
-                        storage = "";
-                        count++;
-                    }
-                }
-                for (int i = 0; i != count; i++)
-                {
-                    ret += int2hex(countVals[i]);
-                }
-                rp.startValue = ret;
-            }
-            if (*(rp.endValue.begin()) == '#')
-            {
-            }
-            else if (*(rp.endValue.begin()) == 'r' || *(rp.endValue.begin()) == 'R')
-            {
-                std::string storage, ret = "#";
-                std::cout << rp.endValue;
-                int count = 0;
-                unsigned char countVals[4];
-                bool passedBracket = false;
-                for (auto letterIt = rp.endValue.begin(); letterIt != rp.endValue.end(); ++letterIt)
-                {
-                    if (!passedBracket)
-                    {
-                        if (isdigit(*letterIt))
-                        {
-                            passedBracket = true;
-                        }
-                    }
-                    if (isdigit(*letterIt) && passedBracket)
-                    {
-                        storage += *letterIt;
-                    }
-                    else if (passedBracket && !isdigit(*letterIt))
-                    {
-                        printf("Storage: %s \n", storage.c_str());
-                        countVals[count] = std::stoi(storage);
-                        storage = "";
-                        count++;
-                    }
-                }
-                for (int i = 0; i != count; i++)
-                {
-                    printf("CountVals[ %d ]: %d ", i, countVals[count]);
-                    ret += int2hex(countVals[i]);
-                }
-                rp.endValue = ret;
-            }
-            printf("The values are: %s and %s \n", rp.startValue.c_str(), rp.endValue.c_str());
-            return hexInterpolate(rp, currentFrame);
-            /*if(*(rp.startValue.begin())=='#'){
-                        colorType=1;
-                        if(rp.startValue.length()==9){
-                            hasA=true;
-                            auto it2=rp.endValue.begin();
-                            for(auto it=rp.startValue.begin();it!=rp.startValue.end();++it){
+            // Converts the string to color using the CSS color parser. Then, interpolates each quantity (r,g,b,a)
+            auto startClr = CSSColorParser::parse(rp.startValue);
+            auto endClr = CSSColorParser::parse(rp.endValue);
+            int newR= round(linearInterpolate(startClr->r,endClr->r, rp.startKeyframe, rp.endKeyframe, currentFrame));
+            int newG= round(linearInterpolate(startClr->g,endClr->g, rp.startKeyframe, rp.endKeyframe, currentFrame));
+            int newB= round(linearInterpolate(startClr->b,endClr->b, rp.startKeyframe, rp.endKeyframe, currentFrame));
+            float alpha=linearInterpolate(startClr->a,endClr->a, rp.startKeyframe, rp.endKeyframe, currentFrame);
+            return CSSColorParser::Color(newR, newG, newB, alpha);
 
-
-                                if(*it!='#'){
-                                    colorValsStart[count]=hex2int(*it)*16;
-                                    colorValsEnd[count]=hex2int(*it2)*16;
-
-                                    it++;
-                                    it2++;
-                                    colorValsStart[count]+=hex2int(*it);
-                                    colorValsEnd[count]+=hex2int(*it2);
-                                    std::cout << endl << " Important data: " << hex2int(*it) << "   " << hex2int(*it2) << endl;
-                                    count+=1;
-
-                                    //std::cout << endl << " Important data: " << *it << "   " << colorValsEnd[count] << endl;//linearInterpolate(colorValsStart[count], colorValsEnd[count], rp.startKeyframe, rp.endKeyframe, currentFrame);// << "    " << int2hex(linearInterpolate(colorValsStart[count], colorValsEnd[count], rp.startKeyframe, rp.endKeyframe, currentFrame)) << endl;
-                                    cout << "Checking:" << colorValsStart[count] << "   " << colorValsEnd[count];
-                                    ret+=int2hex(linearInterpolate(colorValsStart[count], colorValsEnd[count], rp.startKeyframe, rp.endKeyframe, currentFrame));
-                                }
-                                ++it2;
-                            }
-                        }
-                        else{
-                            hasA=false;
-                            auto it2=rp.endValue.begin();
-                            for(auto it=rp.startValue.begin();it!=rp.startValue.end();++it){
-                                if(*it!='#'){
-                                    colorValsStart[count]=hex2int(*it)*16;
-                                    colorValsEnd[count]=hex2int(*it2)*16;
-                                    printf("Debug logA: %c \n", (*it2));
-
-                                    //printf("The colorVals part 1 is: %d \n", hex2int(*it2)*16);
-                                    ++it;
-                                    ++it2;
-                                    colorValsStart[count]+=hex2int(*it);
-                                    //printf("The colorValsEnd is: %d \n", colorValsEnd[count]);
-                                    colorValsEnd[count]+=hex2int(*it2);
-                                    printf("Debug logB: %c \n", (*it2));
-                                    if(count==1){
-                                        printf("Debug log: %d \n", colorValsEnd[count]);
-                                    }
-
-                                    ret+=int2hex(linearInterpolate(colorValsStart[count], colorValsEnd[count], rp.startKeyframe, rp.endKeyframe, currentFrame));
-                                    count+=1;
-                                }
-                                ++it2;
-                            }
-                        }
-                        std::cout << endl << ret << endl;
-                        return ret;
-                    }
-                    //RGB comparison
-                    else if(*(rp.startValue.begin())=='r')
-                    {
-
-                    }*/
         };
 
-        void NatronSVGObject::removeRedundantSpaces(std::string *str)
+        std::string NatronSVGObject::ColorToRGBAString(CSSColorParser::Color clr){
+            std::string retStr;
+            retStr+="rgba( ";
+            retStr+=clr.r;
+            retStr+=" ,";
+            retStr+=clr.g;
+            retStr+=" ,";
+            retStr+=clr.b;
+            retStr+=" ,";
+            retStr+=clr.a;
+            retStr+=")";
+            return retStr;
+        }
+        /*void NatronSVGObject::removeRedundantSpaces(std::string *str)
         {
             for (auto it = str->begin(); it != str->end(); ++it)
             {
@@ -633,7 +518,7 @@ using namespace std;
                     it = str->erase(it);
                 }
             }
-        };
+        };*/
         float NatronSVGObject::linearInterpolate(renderPair rp, int currentFrame)
         {
             return (float)((std::stof(rp.endValue) - std::stof(rp.startValue)) * ((currentFrame - rp.startKeyframe) * 1.0 / (rp.endKeyframe - rp.startKeyframe)) + std::stof(rp.startValue));
@@ -648,7 +533,7 @@ using namespace std;
         {
             std::cout << "Object ID:" << p.objectId << "Property Name:" << p.propertyName << "Start value:" << p.startValue << "End:" << p.endValue << "Start keyframe:" << p.startKeyframe << "End keyframe:" << p.endKeyframe;
         };
-        std::map<std::string, std::list<float>> NatronSVGObject::createMap(std::string value){
+        /*std::map<std::string, std::list<float>> NatronSVGObject::createMap(std::string value){
             removeRedundantSpaces(&value);
             bool done=false;
             std::string name;
@@ -693,7 +578,7 @@ using namespace std;
 
             }
             return newMap;
-        };
+        };*/
 
         void NatronSVGObject::displayRenderingData()
         {

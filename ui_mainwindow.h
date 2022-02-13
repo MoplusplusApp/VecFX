@@ -53,7 +53,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1107, 785);
+        MainWindow->resize(1091, 785);
         MainWindow->setStyleSheet(QString::fromUtf8("background-color: #222222;\n"
 "color: #DDDDDD;\n"
 ""));
@@ -171,7 +171,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1107, 22));
+        menubar->setGeometry(QRect(0, 0, 1091, 22));
         menubar->setStyleSheet(QString::fromUtf8("QMenuBar#QMenu{\n"
 "	background-color: rgb(193, 125, 17);\n"
 "	color: #000000;\n"

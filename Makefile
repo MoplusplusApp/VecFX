@@ -16,8 +16,8 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -g -std=gnu++11 -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I../../../Qt/5.15.2/gcc_64/include -I../../../Qt/5.15.2/gcc_64/include/QtWidgets -I../../../Qt/5.15.2/gcc_64/include/QtGui -I../../../Qt/5.15.2/gcc_64/include/QtCore -I. -I/usr/include/libdrm -I. -I../../../Qt/5.15.2/gcc_64/mkspecs/linux-g++
+CXXFLAGS      = -pipe -g -std=gnu++1z -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
+INCPATH       = -I. -I. -I../../../Qt/5.15.2/gcc_64/include -I../../../Qt/5.15.2/gcc_64/include/QtWidgets -I../../../Qt/5.15.2/gcc_64/include/QtGui -I../../../Qt/5.15.2/gcc_64/include/QtCore -I. -I/usr/include/libdrm -I. -I../../../Qt/5.15.2/gcc_64/mkspecs/linux-g++
 QMAKE         = /home/ravi-arora/Qt/5.15.2/gcc_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = VecFXGui1.0.0
 DISTDIR = /home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui/.tmp/VecFXGui1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/ravi-arora/Qt/5.15.2/gcc_64/lib
-LIBS          = $(SUBLIBS) -lpugixml /home/ravi-arora/Qt/5.15.2/gcc_64/lib/libQt5Widgets.so /home/ravi-arora/Qt/5.15.2/gcc_64/lib/libQt5Gui.so /home/ravi-arora/Qt/5.15.2/gcc_64/lib/libQt5Core.so -lGL -lpthread   
+LIBS          = $(SUBLIBS) -lpugixml -L/home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui/./ -lresvg /home/ravi-arora/Qt/5.15.2/gcc_64/lib/libQt5Widgets.so /home/ravi-arora/Qt/5.15.2/gcc_64/lib/libQt5Gui.so /home/ravi-arora/Qt/5.15.2/gcc_64/lib/libQt5Core.so -lGL -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -53,11 +53,13 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = SVGObject.cpp \
+		csscolorparser.cpp \
 		kfTableModel.cpp \
 		main.cpp \
 		mainwindow.cpp moc_kfTableModel.cpp \
 		moc_mainwindow.cpp
 OBJECTS       = SVGObject.o \
+		csscolorparser.o \
 		kfTableModel.o \
 		main.o \
 		mainwindow.o \
@@ -259,6 +261,7 @@ DIST          = ../../../Qt/5.15.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/default_pre.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/default_post.prf \
+		../../../Qt/5.15.2/gcc_64/mkspecs/features/link_pkgconfig.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/qml_debug.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/warn_on.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/qt.prf \
@@ -274,9 +277,13 @@ DIST          = ../../../Qt/5.15.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/exceptions.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/yacc.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/lex.prf \
-		VecFXGui.pro SVGObject.hpp \
+		VecFXGui.pro ResvgQt.h \
+		SVGObject.hpp \
+		csscolorparser.hpp \
 		kfTableModel.h \
-		mainwindow.h SVGObject.cpp \
+		mainwindow.h \
+		resvg.h SVGObject.cpp \
+		csscolorparser.cpp \
 		kfTableModel.cpp \
 		main.cpp \
 		mainwindow.cpp
@@ -288,7 +295,7 @@ TARGET        = VecFXGui
 first: all
 ####### Build rules
 
-VecFXGui: ui_mainwindow.h $(OBJECTS)  
+VecFXGui: /home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui/./libresvg.a ui_mainwindow.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: VecFXGui.pro ../../../Qt/5.15.2/gcc_64/mkspecs/linux-g++/qmake.conf ../../../Qt/5.15.2/gcc_64/mkspecs/features/spec_pre.prf \
@@ -487,6 +494,7 @@ Makefile: VecFXGui.pro ../../../Qt/5.15.2/gcc_64/mkspecs/linux-g++/qmake.conf ..
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/default_pre.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/resolve_config.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/default_post.prf \
+		../../../Qt/5.15.2/gcc_64/mkspecs/features/link_pkgconfig.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/qml_debug.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/warn_on.prf \
 		../../../Qt/5.15.2/gcc_64/mkspecs/features/qt.prf \
@@ -700,6 +708,7 @@ Makefile: VecFXGui.pro ../../../Qt/5.15.2/gcc_64/mkspecs/linux-g++/qmake.conf ..
 ../../../Qt/5.15.2/gcc_64/mkspecs/features/default_pre.prf:
 ../../../Qt/5.15.2/gcc_64/mkspecs/features/resolve_config.prf:
 ../../../Qt/5.15.2/gcc_64/mkspecs/features/default_post.prf:
+../../../Qt/5.15.2/gcc_64/mkspecs/features/link_pkgconfig.prf:
 ../../../Qt/5.15.2/gcc_64/mkspecs/features/qml_debug.prf:
 ../../../Qt/5.15.2/gcc_64/mkspecs/features/warn_on.prf:
 ../../../Qt/5.15.2/gcc_64/mkspecs/features/qt.prf:
@@ -731,8 +740,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../../Qt/5.15.2/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents SVGObject.hpp kfTableModel.h mainwindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents SVGObject.cpp kfTableModel.cpp main.cpp mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ResvgQt.h SVGObject.hpp csscolorparser.hpp kfTableModel.h mainwindow.h resvg.h $(DISTDIR)/
+	$(COPY_FILE) --parents SVGObject.cpp csscolorparser.cpp kfTableModel.cpp main.cpp mainwindow.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -763,7 +772,7 @@ compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
 moc_predefs.h: ../../../Qt/5.15.2/gcc_64/mkspecs/features/data/dummy.cpp
-	g++ -pipe -g -std=gnu++11 -Wall -Wextra -dM -E -o moc_predefs.h ../../../Qt/5.15.2/gcc_64/mkspecs/features/data/dummy.cpp
+	g++ -pipe -g -std=gnu++1z -Wall -Wextra -dM -E -o moc_predefs.h ../../../Qt/5.15.2/gcc_64/mkspecs/features/data/dummy.cpp
 
 compiler_moc_header_make_all: moc_kfTableModel.cpp moc_mainwindow.cpp
 compiler_moc_header_clean:
@@ -837,7 +846,7 @@ moc_kfTableModel.cpp: kfTableModel.h \
 		../../../Qt/5.15.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
 		moc_predefs.h \
 		../../../Qt/5.15.2/gcc_64/bin/moc
-	/home/ravi-arora/Qt/5.15.2/gcc_64/bin/moc $(DEFINES) --include /home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui/moc_predefs.h -I/home/ravi-arora/Qt/5.15.2/gcc_64/mkspecs/linux-g++ -I/home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui -I/home/ravi-arora/Qt/5.15.2/gcc_64/include -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtWidgets -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtGui -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include kfTableModel.h -o moc_kfTableModel.cpp
+	/home/ravi-arora/Qt/5.15.2/gcc_64/bin/moc $(DEFINES) --include /home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui/moc_predefs.h -I/home/ravi-arora/Qt/5.15.2/gcc_64/mkspecs/linux-g++ -I/home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui -I/home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui -I/home/ravi-arora/Qt/5.15.2/gcc_64/include -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtWidgets -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtGui -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include kfTableModel.h -o moc_kfTableModel.cpp
 
 moc_mainwindow.cpp: mainwindow.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QMainWindow \
@@ -949,7 +958,7 @@ moc_mainwindow.cpp: mainwindow.h \
 		SVGObject.hpp \
 		moc_predefs.h \
 		../../../Qt/5.15.2/gcc_64/bin/moc
-	/home/ravi-arora/Qt/5.15.2/gcc_64/bin/moc $(DEFINES) --include /home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui/moc_predefs.h -I/home/ravi-arora/Qt/5.15.2/gcc_64/mkspecs/linux-g++ -I/home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui -I/home/ravi-arora/Qt/5.15.2/gcc_64/include -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtWidgets -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtGui -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+	/home/ravi-arora/Qt/5.15.2/gcc_64/bin/moc $(DEFINES) --include /home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui/moc_predefs.h -I/home/ravi-arora/Qt/5.15.2/gcc_64/mkspecs/linux-g++ -I/home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui -I/home/ravi-arora/QtStuff/qtLearningProjects/VecFXGui -I/home/ravi-arora/Qt/5.15.2/gcc_64/include -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtWidgets -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtGui -I/home/ravi-arora/Qt/5.15.2/gcc_64/include/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -974,6 +983,9 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 
 SVGObject.o: SVGObject.cpp SVGObject.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o SVGObject.o SVGObject.cpp
+
+csscolorparser.o: csscolorparser.cpp csscolorparser.hpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o csscolorparser.o csscolorparser.cpp
 
 kfTableModel.o: kfTableModel.cpp kfTableModel.h \
 		../../../Qt/5.15.2/gcc_64/include/QtCore/QAbstractTableModel \
@@ -1281,6 +1293,11 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qdesktopwidget.h \
 		../../../Qt/5.15.2/gcc_64/include/QtGui/qguiapplication.h \
 		../../../Qt/5.15.2/gcc_64/include/QtGui/qinputmethod.h \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QHBoxLayout \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qlayout.h \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qgridlayout.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QHeaderView \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qheaderview.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qabstractitemview.h \
@@ -1306,28 +1323,52 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qmenu.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qmenubar.h \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QPushButton \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qpushbutton.h \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qabstractbutton.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qstatusbar.h \
-		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QTableView \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QTableWidget \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qtablewidget.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qtableview.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QVBoxLayout \
-		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qgridlayout.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QWidget \
 		kfTableModel.h \
 		../../../Qt/5.15.2/gcc_64/include/QtCore/QAbstractTableModel \
+		ResvgQt.h \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/QDebug \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/QFile \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/QFileInfo \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/qfileinfo.h \
+		../../../Qt/5.15.2/gcc_64/include/QtGui/QGuiApplication \
+		../../../Qt/5.15.2/gcc_64/include/QtGui/QImage \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/QRectF \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/QScopedPointer \
+		../../../Qt/5.15.2/gcc_64/include/QtGui/QScreen \
+		../../../Qt/5.15.2/gcc_64/include/QtGui/qscreen.h \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/QList \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/QObject \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/QRect \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/QSize \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/QSizeF \
+		../../../Qt/5.15.2/gcc_64/include/QtGui/QTransform \
+		../../../Qt/5.15.2/gcc_64/include/QtCore/QString \
+		resvg.h \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QInputDialog \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qlineedit.h \
+		../../../Qt/5.15.2/gcc_64/include/QtGui/qtextcursor.h \
+		../../../Qt/5.15.2/gcc_64/include/QtGui/qtextformat.h \
+		../../../Qt/5.15.2/gcc_64/include/QtGui/qpen.h \
+		../../../Qt/5.15.2/gcc_64/include/QtGui/qtextoption.h \
+		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qdialog.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QFileDialog \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qfiledialog.h \
 		../../../Qt/5.15.2/gcc_64/include/QtCore/qdir.h \
-		../../../Qt/5.15.2/gcc_64/include/QtCore/qfileinfo.h \
-		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qdialog.h \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/QMessageBox \
 		../../../Qt/5.15.2/gcc_64/include/QtWidgets/qmessagebox.h \
 		../../../Qt/5.15.2/gcc_64/include/QtCore/QStringListModel \
-		../../../Qt/5.15.2/gcc_64/include/QtCore/qstringlistmodel.h \
-		../../../Qt/5.15.2/gcc_64/include/QtCore/QDebug
+		../../../Qt/5.15.2/gcc_64/include/QtCore/qstringlistmodel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
 moc_kfTableModel.o: moc_kfTableModel.cpp 

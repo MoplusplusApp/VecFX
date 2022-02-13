@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "csscolorparser.hpp"
 
     int randomNumInRange(int rangeStart, int rangeEnd);
     std::string addZeroes(int number, int maxNumber);
@@ -26,7 +27,27 @@
             int propertyType, startKeyframe, endKeyframe;
             std::string startValue, endValue;
         };
-    const std::list<std::string> possibleAtributes={"stroke-width","stroke-dashoffset", "opacity", "rx", "ry", "cx", "cy", "pathLength", "width", "height", "x", "y",};
+    //const std::list<> possibleAtributes={"stroke-width","stroke-dashoffset", "opacity", "rx", "ry", "cx", "cy", "pathLength", "width", "height", "x", "y", "fill-opacity","color"};
+    const std::map<std::string, int> possibleAttributes = {
+        {"stroke-opacity", 1},
+        {"fill-opacity", 1},
+        {"stroke-width", 1},
+        {"stroke-dashoffset", 1},
+        {"rx",1},
+        {"ry",1},
+        {"cx",1},
+        {"cy",1},
+        {"offset", 1},
+        {"stroke-miterlimit", 1},
+        {"fill-opacity", 1},
+        {"path-length", 1},
+        {"width", 1},
+        {"height", 1},
+        {"color", 2},
+        {"fill", 2},
+        {"stroke", 2},
+        {"transform", 3}};
+
     class NatronSVGObject
     {
     public:
@@ -48,6 +69,7 @@
         void setPseudoGroupAtKeyframe(std::string groupName, std::string attributeName, std::string value, unsigned int keyframeNum, int randRangeStart = 0, int randRangeEnd = 0);
         void render(std::string folderName);
         void setKeyframeData();
+        std::string ColorToRGBAString(CSSColorParser::Color clr);
     private:
         std::map<std::string, std::list<std::string>> pseudoGroups;
 
@@ -60,7 +82,8 @@
         std::map<std::string, std::list<float>> interpolateMap(std::map<std::string, std::list<float>> startMap, std::map<std::string, std::list<float>> endMap, int startKeyframe, int endKeyframe, int currentKeyframe);
         std::string createStringFromMap(std::map<std::string, std::list<float>> dataMap);
         std::string hexInterpolate(renderPair rp, int currentFrame);
-        std::string colorInterpolate(renderPair rp, int currentFrame);
+        CSSColorParser::Color colorInterpolate(renderPair rp, int currentFrame);
+
         void removeRedundantSpaces(std::string *str);
         float linearInterpolate(renderPair rp, int currentFrame);
         float linearInterpolate(float startValue, float endValue, int startKeyframe, int endKeyframe, int currentFrame);
